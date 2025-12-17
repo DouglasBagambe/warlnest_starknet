@@ -21,6 +21,9 @@
     </filter>
   </defs>
   
+  <!-- White Background -->
+  <rect width="1200" height="500" fill="#FFFFFF"/>
+  
   <!-- LOGO WITH FULL VISIBILITY - VERTICALLY CENTERED -->
   <g id="epicIcon" transform="translate(80, 220)">
     
@@ -56,7 +59,7 @@
           fill="url(#wGradient)"
           letter-spacing="-3"
           filter="url(#strongShadow)">
-      Warl<tspan fill="#E8A93E" font-weight="900">Nest</tspan>
+      Warl<tspan fill="#a17324ff" font-weight="900">Nest</tspan>
     </text>
     
     <!-- Bold underline with gradient -->
@@ -67,9 +70,9 @@
           font-family="'Segoe UI', Arial, sans-serif" 
           font-size="28" 
           font-weight="600"
-          fill="#E8A93E"
+          fill="#a17324ff"
           letter-spacing="1">
-      Smart Property, <tspan fill="url(#wGradient)" font-weight="700">Zero Scams</tspan>
+      Smart Properties, <tspan fill="url(#wGradient)" font-weight="700">Zero Scams</tspan>
     </text>
     
     <!-- Micro descriptor -->
@@ -77,7 +80,7 @@
           font-family="'Segoe UI', Arial, sans-serif" 
           font-size="16" 
           font-weight="400"
-          fill="#E8A93E"
+          fill="url(#wGradient)"
           letter-spacing="0.5">
       Verified Property Listings | Houses • Land • Apartments
     </text>

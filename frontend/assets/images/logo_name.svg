@@ -1,4 +1,4 @@
-<svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Gradient for modern look -->
     <linearGradient id="wGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -14,13 +14,18 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    
+    <!-- Strong shadow -->
+    <filter id="strongShadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.35"/>
+    </filter>
   </defs>
   
-  <!-- LOGO PERFECTLY CENTERED -->
-  <g id="epicIcon" transform="translate(200, 200)">
+  <!-- LOGO WITH FULL VISIBILITY - VERTICALLY CENTERED -->
+  <g id="epicIcon" transform="translate(80, 220)">
     
-    <!-- Extended roof line - FULL POINTS VISIBLE -->
-    <g transform="translate(0, -80)">
+    <!-- Extended roof line - NO SHADOW, FULL POINTS VISIBLE -->
+    <g transform="translate(150, 0)">
       <path d="M -110 50 L 0 -40 L 110 50" 
             stroke="url(#wGradient)" 
             stroke-width="20" 
@@ -30,8 +35,8 @@
             filter="url(#glow)"/>
     </g>
     
-    <!-- Modern "W" -->
-    <g transform="translate(0, 20)">
+    <!-- Modern "W" - NO SHADOW -->
+    <g transform="translate(150, 100)">
       <path d="M -70 -50 L -46 38 L -24 -15 L 0 32 L 24 -15 L 46 38 L 70 -50" 
             stroke="url(#wGradient)" 
             stroke-width="20" 
@@ -40,5 +45,18 @@
             stroke-linejoin="round"
             filter="url(#glow)"/>
     </g>
+  </g>
+  
+  <!-- Wordmark - PERFECTLY ALIGNED -->
+  <g id="wordmark">
+    <text x="400" y="260" 
+          font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" 
+          font-size="98" 
+          font-weight="800" 
+          fill="url(#wGradient)"
+          letter-spacing="-3"
+          filter="url(#strongShadow)">
+      Warl<tspan fill="#a17324ff" font-weight="900">Nest</tspan>
+    </text>
   </g>
 </svg>

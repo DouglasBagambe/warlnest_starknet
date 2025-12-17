@@ -182,18 +182,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         title: Row(
           children: [
             SvgPicture.asset(
-              'assets/images/app_logo_gif.svg',
-              width: 32,
-              height: 32,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'WarlNest',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: 20,
-              ),
+              'assets/images/logo_name.svg',
+              width: 320,
+              height: 64,
             ),
           ],
         ),

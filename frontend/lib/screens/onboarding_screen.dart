@@ -11,31 +11,61 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
 
   final List<OnboardingPage> _pages = [
     OnboardingPage(
-      title: 'Find Your Dream Home',
-      description: 'Browse through thousands of properties in Uganda\'s most desirable locations.',
+      title: 'Welcome to ',
+      highlightedWord: 'WarlNest',
+      description: 'Your trusted platform for verified property listings across Uganda.\nSmart properties, zero scams.',
       icon: Icons.home_rounded,
+      gradient: [Color(0xFFFAFAFA), Color(0xFFF0F0F0)],
     ),
     OnboardingPage(
-      title: 'Compare Properties',
-      description: 'Compare up to 3 properties side by side to make the best decision.',
-      icon: Icons.compare_arrows_rounded,
+      title: 'Blockchain Verified',
+      highlightedWord: 'Properties',
+      description: 'Every listing is secured with blockchain technology and AI verification to eliminate fraud.',
+      icon: Icons.verified_user_rounded,
+      gradient: [Color(0xFFE8F5E9), Color(0xFFD4EED7)],
     ),
     OnboardingPage(
-      title: 'Book Viewings',
-      description: 'Schedule property viewings with just a few taps.',
-      icon: Icons.calendar_today_rounded,
+      title: 'Smart Search &',
+      highlightedWord: 'Compare',
+      description: 'Advanced GIS mapping, AI-powered filters, and side-by-side property comparisons.',
+      icon: Icons.analytics_rounded,
+      gradient: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)],
+    ),
+    OnboardingPage(
+      title: 'Connect with',
+      highlightedWord: 'Trusted Brokers',
+      description: 'Schedule viewings and connect directly with verified agents and property owners.',
+      icon: Icons.handshake_rounded,
+      gradient: [Color(0xFFFFF9E6), Color(0xFFFFF3CD)],
     ),
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      duration: Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    );
+    _fadeController.forward();
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
@@ -43,6 +73,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() {
       _currentPage = page;
     });
+    _fadeController.reset();
+    _fadeController.forward();
   }
 
   Future<void> _completeOnboarding() async {
@@ -52,89 +84,124 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (!mounted) return;
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: Duration(milliseconds: 500),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background gradient
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
-                ],
-              ),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: _pages[_currentPage].gradient,
           ),
-          // Page content
-          SafeArea(
-            child: Column(
-              children: [
-                // Skip button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextButton(
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Top bar with skip button only
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
                       onPressed: _completeOnboarding,
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 16,
-                        ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Color(0xFF666666),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Skip',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          Icon(Icons.arrow_forward_rounded, size: 18),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                // Page view
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: _onPageChanged,
-                    itemCount: _pages.length,
-                    itemBuilder: (context, index) {
-                      return _buildPage(_pages[index]);
-                    },
-                  ),
+              ),
+
+              // Page view
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: _onPageChanged,
+                  itemCount: _pages.length,
+                  itemBuilder: (context, index) {
+                    return _buildPage(_pages[index], index);
+                  },
                 ),
-                // Bottom navigation
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Page indicator
-                      Row(
-                        children: List.generate(
-                          _pages.length,
-                          (index) => Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentPage == index
-                                  ? Colors.white
-                                  : Colors.white.withOpacity(0.4),
-                            ),
+              ),
+
+              // Bottom section
+              Container(
+                padding: const EdgeInsets.all(32.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // Page indicator dots
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        _pages.length,
+                        (index) => AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          width: _currentPage == index ? 32 : 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            gradient: _currentPage == index
+                                ? LinearGradient(
+                                    colors: [Color(0xFF178F5B), Color(0xFF1A3C6E)],
+                                  )
+                                : null,
+                            color: _currentPage != index ? Color(0xFFE0E0E0) : null,
                           ),
                         ),
                       ),
-                      // Next/Get Started button
-                      ElevatedButton(
+                    ),
+                    SizedBox(height: 32),
+
+                    // CTA Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                      child: ElevatedButton(
                         onPressed: () {
                           if (_currentPage < _pages.length - 1) {
                             _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 400),
                               curve: Curves.easeInOut,
                             );
                           } else {
@@ -142,89 +209,151 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Theme.of(context).colorScheme.primary,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
+                          backgroundColor: Color(0xFF178F5B),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shadowColor: Color(0xFF178F5B).withOpacity(0.3),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: Text(
-                          _currentPage < _pages.length - 1 ? 'Next' : 'Get Started',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _currentPage < _pages.length - 1 ? 'Continue' : 'Get Started',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                _currentPage < _pages.length - 1
+                                    ? Icons.arrow_forward_rounded
+                                    : Icons.check_rounded,
+                                size: 20,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildPage(OnboardingPage page) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Icon - Sleek logo on first page
-          _currentPage == 0 ? 
-            SvgPicture.asset(
-              'assets/images/app_logo.svg',
-              width: 100,
-              height: 100,
-              fit: BoxFit.contain,
-            )
-            : Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
+  Widget _buildPage(OnboardingPage page, int index) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo or Icon
+            Hero(
+              tag: 'onboarding_icon_$index',
+              child: Container(
+                width: 240,
+                height: 240,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF178F5B).withOpacity(0.15),
+                      blurRadius: 30,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: index == 0
+                      ? SvgPicture.asset(
+                          'assets/images/app_logo.svg',
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.contain,
+                        )
+                      : Icon(
+                          page.icon,
+                          size: 100,
+                          color: Color(0xFF178F5B),
+                        ),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 56),
+
+            // Title with gradient text for WarlNest
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1A1A),
+                  height: 1.3,
+                ),
+                children: [
+                  TextSpan(text: page.title),
+                  if (index == 0)
+                    WidgetSpan(
+                      child: ShaderMask(
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: [Color(0xFF178F5B), Color(0xFF1A3C6E)],
+                        ).createShader(bounds),
+                        child: Text(
+                          page.highlightedWord,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    TextSpan(
+                      text: page.highlightedWord,
+                      style: TextStyle(
+                        color: Color(0xFF178F5B),
+                      ),
+                    ),
                 ],
               ),
-              child: Icon(
-                page.icon,
-                size: 60,
-                color: Theme.of(context).colorScheme.primary,
+            ),
+
+            SizedBox(height: 20),
+
+            // Description
+            Text(
+              page.description,
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF666666),
+                height: 1.6,
               ),
+              textAlign: TextAlign.center,
             ),
-          const SizedBox(height: 48),
-          // Title
-          Text(
-            page.title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          // Description
-          Text(
-            page.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withOpacity(0.8),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -232,12 +361,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 class OnboardingPage {
   final String title;
+  final String highlightedWord;
   final String description;
   final IconData icon;
+  final List<Color> gradient;
 
   OnboardingPage({
     required this.title,
+    required this.highlightedWord,
     required this.description,
     required this.icon,
+    required this.gradient,
   });
-} 
+}
