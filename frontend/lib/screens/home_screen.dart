@@ -28,12 +28,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<double> _fadeAnimation;
   String _selectedCategory = 'All';
 
-  final List<String> _categories = ['All', 'Apartments', 'Houses', 'Condos', 'Villas'];
+  final List<String> _categories = [
+    'All',
+    'Apartments',
+    'Houses',
+    'Condos',
+    'Villas'
+  ];
+
   final List<Map<String, dynamic>> _quickActions = [
-    {'icon': Icons.calculate_rounded, 'label': 'Mortgage', 'color': Colors.blue},
-    {'icon': Icons.location_on_rounded, 'label': 'Map View', 'color': Colors.green},
-    {'icon': Icons.analytics_rounded, 'label': 'Market', 'color': Colors.orange},
-    {'icon': Icons.bookmark_rounded, 'label': 'Saved', 'color': Colors.purple},
+    {
+      'icon': Icons.account_balance_outlined,
+      'label': 'Mortgage',
+      'color': Color(0xFF178F5B)
+    },
+    {
+      'icon': Icons.map_outlined,
+      'label': 'Map View',
+      'color': Color(0xFF1A3C6E)
+    },
+    {
+      'icon': Icons.trending_up_rounded,
+      'label': 'Analytics',
+      'color': Color(0xFFA17324)
+    },
+    {
+      'icon': Icons.bookmarks_outlined,
+      'label': 'Saved',
+      'color': Color(0xFF178F5B)
+    },
   ];
 
   @override
@@ -45,11 +68,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _setupAnimations() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
     );
   }
 
@@ -93,7 +119,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           content: Text('Error: $error'),
           backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }
@@ -101,39 +129,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    body: _isLoading ? const LoadingScreen() : _buildMainContent(),
-    floatingActionButton: _buildFloatingActionButton(),
-    bottomNavigationBar: _buildBottomNavigationBar(),
-  );
-}
-
-  // Widget _buildLoadingScreen() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         begin: Alignment.topCenter,
-  //         end: Alignment.bottomCenter,
-  //         colors: [
-  //           Theme.of(context).colorScheme.primary.withOpacity(0.1),
-  //           Theme.of(context).colorScheme.surface,
-  //         ],
-  //       ),
-  //     ),
-  //     child: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Container(
-  //             padding: const EdgeInsets.all(32),
-  //             decoration: BoxDecoration(
-  //               color: Theme.of(context).colorScheme.surface,
-  //               shape: BoxShape.circle,
-  //               boxShadow: [
-  //                 BoxShadow(
-  //                   color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-  //                   blurRadius: 30,
-  //      
+    return Scaffold(
+      body: _isLoading ? const LoadingScreen() : _buildMainContent(),
+      floatingActionButton: _currentIndex == 0 ? _buildFloatingActionButton() : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
 
   Widget _buildMainContent() {
     return FadeTransition(
@@ -177,14 +179,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       floating: true,
       pinned: true,
       elevation: 0,
-      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.95),
       flexibleSpace: FlexibleSpaceBar(
         title: Row(
           children: [
-            SvgPicture.asset(
-              'assets/images/logo_name.svg',
-              width: 320,
-              height: 64,
+            Container(
+              margin: const EdgeInsets.only(top: 6),
+              child: SvgPicture.asset(
+                'assets/images/app_logo.svg',
+                width: 48,
+                height: 48,
+              ),
+            ),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Color(0xFF178F5B), Color(0xFF1A3C6E)],
+                      ).createShader(bounds),
+                      child: const Text(
+                        'Warl',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'Nest',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFFA17324),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -264,7 +301,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.7)
+                  ],
                 ),
               ),
             ),
@@ -278,16 +318,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Text(
                     'Discover Your Dream Home',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '${_allProperties.length} premium properties available',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
+                          color: Colors.white.withOpacity(0.9),
+                        ),
                   ),
                 ],
               ),
@@ -300,36 +340,74 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildQuickActions() {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Row(
-          children: _quickActions.map((action) => Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Icon(action['icon'], color: action['color'], size: 24),
-                  const SizedBox(height: 8),
-                  Text(
-                    action['label'],
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onSurface,
+          children: _quickActions.map((action) {
+            return Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(16),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withOpacity(0.1),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: action['color'].withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                action['icon'],
+                                color: action['color'],
+                                size: 22,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              action['label'],
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                letterSpacing: 0.2,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          )).toList(),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -338,8 +416,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildCategoryFilter() {
     return SliverToBoxAdapter(
       child: Container(
-        height: 50,
-        margin: const EdgeInsets.symmetric(vertical: 16),
+        height: 56,
+        margin: const EdgeInsets.symmetric(vertical: 20),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -347,21 +425,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           itemBuilder: (context, index) {
             final category = _categories[index];
             final isSelected = _selectedCategory == category;
+            
             return Container(
-              margin: const EdgeInsets.only(right: 12),
-              child: FilterChip(
-                label: Text(category),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() => _selectedCategory = category);
-                },
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                labelStyle: TextStyle(
-                  color: isSelected 
-                    ? Theme.of(context).colorScheme.primary 
-                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              margin: const EdgeInsets.only(right: 10),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => setState(() => _selectedCategory = category),
+                  borderRadius: BorderRadius.circular(14),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withOpacity(0.2),
+                        width: 1.5,
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Center(
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7),
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w600,
+                          fontSize: 14,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -421,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           SizedBox(
             height: 280,
             child: _recentProperties.isEmpty
-                ? _buildEmptyState('No recent properties', Icons.star_outline)
+                ? _buildEmptyState('No recent properties', Icons.access_time)
                 : _buildHorizontalPropertyList(_recentProperties),
           ),
         ],
@@ -467,7 +589,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSectionHeader(String title, String subtitle, VoidCallback onTap) {
+  Widget _buildSectionHeader(
+    String title,
+    String subtitle,
+    VoidCallback onTap,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
       child: Row(
@@ -479,21 +605,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
+              const SizedBox(height: 2),
               Text(
                 subtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
               ),
             ],
           ),
           TextButton.icon(
             onPressed: onTap,
-            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
-            label: const Text('View All'),
+            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+            label: const Text(
+              'View All',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ],
       ),
@@ -508,7 +644,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       itemBuilder: (context, index) {
         final screenWidth = MediaQuery.of(context).size.width;
         final cardWidth = screenWidth > 600 ? 320.0 : screenWidth * 0.75;
-        
+
         return Container(
           width: cardWidth,
           margin: const EdgeInsets.only(right: 16),
@@ -541,8 +677,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text(
               message,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
+                  ),
             ),
           ],
         ),
@@ -568,7 +707,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           MaterialPageRoute(builder: (context) => const FilterScreen()),
         ),
         icon: const Icon(Icons.tune_rounded),
-        label: const Text('Filter'),
+        label: const Text(
+          'Filter',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         elevation: 0,
@@ -577,12 +719,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildBottomNavigationBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -590,15 +740,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(0, Icons.home_rounded, 'Home'),
+              _buildNavItem(0, null, 'Home', isLogo: true),
               _buildNavItem(1, Icons.favorite_rounded, 'Favorites'),
               _buildNavItem(2, Icons.explore_rounded, 'Explore'),
               _buildNavItem(3, Icons.compare_arrows_rounded, 'Compare'),
-              _buildNavItem(4, Icons.settings_rounded, 'Settings'),
+              _buildNavItem(4, Icons.person_rounded, 'Profile'),
             ],
           ),
         ),
@@ -606,46 +756,66 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(
+    int index,
+    IconData? icon,
+    String label, {
+    bool isLogo = false,
+  }) {
     final isSelected = _currentIndex == index;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     final color = isSelected
         ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
+        : Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
 
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-              : Colors.transparent,
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => setState(() => _currentIndex = index),
           borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            index == 0
-                ? SvgPicture.asset(
-                    'assets/images/app_logo.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: isSelected
-                        ? null
-                        : ColorFilter.mode(color, BlendMode.srcIn),
-                  )
-                : Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isLogo)
+                  SvgPicture.asset(
+                    'assets/images/app_logo.svg',
+                    width: 28,
+                    height: 28,
+                    colorFilter: ColorFilter.mode(
+                      color,
+                      BlendMode.srcIn,
+                    ),
+                  )
+                else
+                  Icon(
+                    icon,
+                    color: color,
+                    size: 26,
+                  ),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

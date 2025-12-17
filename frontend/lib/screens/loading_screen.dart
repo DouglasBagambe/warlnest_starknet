@@ -66,54 +66,49 @@ class LoadingScreen extends StatelessWidget {
     final primaryColorHex = '#${primaryColor.value.toRadixString(16).substring(2)}';
     
     const svgString = '''
-<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1A237E;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#283593;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#3949AB;stop-opacity:1" />
+    <!-- Gradient for modern look -->
+    <linearGradient id="wGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#178F5B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A3C6E;stop-opacity:1" />
     </linearGradient>
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
   
-  <!-- Main W structure with house roofline -->
-  <g filter="url(#shadow)">
-    <!-- W outline with Netflix-style animation -->
-    <path d="M20 85 L35 45 L50 75 L65 25 L80 75 L95 45 L110 85" 
-          fill="none" 
-          stroke="url(#blueGradient)" 
-          stroke-width="8" 
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-dasharray="300"
-          stroke-dashoffset="300">
-      <animate attributeName="stroke-dashoffset" 
-               values="300;0;0;300" 
-               dur="6s" 
-               begin="0s"
-               repeatCount="indefinite"
-               keyTimes="0;0.5;0.9;1"
-               fill="freeze"/>
-    </path>
+  <!-- LOGO PERFECTLY CENTERED -->
+  <g id="epicIcon" transform="translate(200, 200)">
+    
+    <!-- Extended roof line - FULL POINTS VISIBLE -->
+    <g transform="translate(0, -80)">
+      <path d="M -110 50 L 0 -40 L 110 50" 
+            stroke="url(#wGradient)" 
+            stroke-width="20" 
+            fill="none" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+            filter="url(#glow)"/>
+    </g>
+    
+    <!-- Modern "W" -->
+    <g transform="translate(0, 20)">
+      <path d="M -70 -50 L -46 38 L -24 -15 L 0 32 L 24 -15 L 46 38 L 70 -50" 
+            stroke="url(#wGradient)" 
+            stroke-width="20" 
+            fill="none" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+            filter="url(#glow)"/>
+    </g>
   </g>
-  
-  <!-- Subtle ground line with delayed animation -->
-  <line x1="15" y1="90" x2="105" y2="90" 
-        stroke="url(#blueGradient)" 
-        stroke-width="2" 
-        opacity="0.4"
-        stroke-dasharray="120"
-        stroke-dashoffset="120">
-    <animate attributeName="stroke-dashoffset" 
-             values="120;0;0;120" 
-             dur="6s" 
-             begin="2.5s"
-             repeatCount="indefinite"
-             keyTimes="0;0.4;0.8;1"
-             fill="freeze"/>
-  </line>
 </svg>
     ''';
 

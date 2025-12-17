@@ -284,9 +284,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                 child: Center(
                   child: index == 0
                       ? SvgPicture.asset(
-                          'assets/images/app_logo.svg',
-                          width: 160,
-                          height: 160,
+                          'assets/images/logo.svg',
+                          width: 220,
+                          height: 140,
                           fit: BoxFit.contain,
                         )
                       : Icon(
